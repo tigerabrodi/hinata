@@ -1,12 +1,12 @@
 import { SearchParams } from '@/lib/schemas'
 import { useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { useImageSearch } from './useImageSearch'
 import { DEFAULT_QUERY_PARAM_VALUES, QUERY_PARAMS } from '@/lib/constants'
 import { SearchForm } from './SearchForm'
 import { Button } from '@/components/ui/button'
 import { ImageGridSkeleton } from './ImageGridSkeleton'
 import { ImageGrid, type ImageWithPageIndex } from './ImageGrid'
+import { useSearchParams } from 'react-router'
 
 export function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams()
