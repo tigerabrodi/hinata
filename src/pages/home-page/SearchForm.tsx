@@ -1,6 +1,11 @@
 import { FormEvent, useState } from 'react'
 
-import { orderBySchema, colorSchema, SearchParams } from '@/lib/schemas'
+import {
+  orderBySchema,
+  colorSchema,
+  SearchParams,
+  ColorOption,
+} from '@/lib/schemas'
 import { useId } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -24,7 +29,7 @@ const SORT_OPTIONS: Array<{ value: SearchParams['orderBy']; label: string }> = [
   },
 ]
 
-const COLOR_OPTIONS: Array<{ value: SearchParams['color']; label: string }> = [
+const COLOR_OPTIONS: Array<{ value: ColorOption; label: string }> = [
   {
     value: 'black_and_white',
     label: 'Black and White',
@@ -125,7 +130,7 @@ export function SearchForm({
         <Button disabled={!inputValue || isLoading}>Search</Button>
       </div>
 
-      <div className="flex flex-col gap-2 md:flex-row md:items-center">
+      <div className="flex flex-row items-center gap-2">
         <Select
           value={orderBy}
           onValueChange={(value) => onOrderByChange(orderBySchema.parse(value))}
