@@ -12,12 +12,13 @@ export function ImageGrid({ images }: { images: Array<ImageWithPageIndex> }) {
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {images.map(({ image, pageIndex }) => {
         const isImageAmongPaginatedResults =
-          pageIndex !== DEFAULT_QUERY_PARAM_VALUES.page
+          pageIndex + 1 !== DEFAULT_QUERY_PARAM_VALUES.page
 
         return (
           <ImageGridItem
             key={`${image.id}-${pageIndex}`}
             image={image}
+            // Optimization to lazy load images that are not the first page
             shouldLazyLoad={isImageAmongPaginatedResults}
           />
         )
