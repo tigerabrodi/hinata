@@ -5,10 +5,13 @@ import { api } from '@/lib/api'
 import { STALE_TIME } from '@/lib/constants'
 import { useEffect } from 'react'
 
-export function useImageSearch(
-  params: Omit<SearchParams, 'page'>,
-  initialPage = 1
-) {
+export function useImageSearch({
+  params,
+  initialPage = 1,
+}: {
+  params: Omit<SearchParams, 'page'>
+  initialPage: number
+}) {
   const query = useInfiniteQuery({
     queryKey: photoKeys.searchResults({
       query: params.query,
