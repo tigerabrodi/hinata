@@ -70,13 +70,56 @@ export function ImageGridItem({
     </div>
   )
 
+  const mobileHeader = (
+    <div className="flex items-center gap-2 md:hidden">
+      <img
+        className="size-8 rounded-full"
+        srcSet={`
+              ${image.user.profile_image.small} 1x,
+              ${image.user.profile_image.medium} 2x,
+              ${image.user.profile_image.large} 3x
+            `}
+        src={image.user.profile_image.small}
+        alt=""
+      />
+      <div className="flex flex-col">
+        {/* TODO: Implement user profile and navigation to it */}
+        <Link
+          to="#"
+          className="pointer-events-auto text-sm font-bold text-primary hover:underline"
+        >
+          {image.user.name}
+        </Link>
+        <p className="text-xs text-primary/50">{image.user.username}</p>
+      </div>
+    </div>
+  )
+
+  const mobileFooter = (
+    <Button
+      variant="outline"
+      onClick={() =>
+        handleDownload({
+          url: image.urls.regular,
+          imageDescription: image.description || FALLBACK_IMAGE_DESCRIPTION,
+        })
+      }
+      className="pointer-events-auto ml-auto md:hidden"
+    >
+      <DownloadIcon size={20} />
+      <span className="font-bold">Download</span>
+    </Button>
+  )
+
   return (
     <figure
-      className="group relative h-fit overflow-hidden rounded-lg bg-gray-100"
+      className="group relative flex h-fit flex-col gap-3 overflow-hidden rounded-lg"
       style={{
         gridRow: `span ${rowsToSpanBasedOnAspectRatio}`,
       }}
     >
+      {mobileHeader}
+
       {/* Link by default are inline elements that won't span the full width of the parent */}
       {/* Block span full width of parent and start on new lines */}
       {/* TODO: implement link and photo details */}
@@ -106,6 +149,8 @@ export function ImageGridItem({
 
       {desktopHoverOverlay}
       <figcaption className="sr-only">Photo by {image.user.name}</figcaption>
+
+      {mobileFooter}
     </figure>
   )
 }
