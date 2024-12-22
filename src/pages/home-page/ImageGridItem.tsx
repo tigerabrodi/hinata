@@ -25,6 +25,51 @@ export function ImageGridItem({
 
   const paddingBottom = `${(image.height / image.width) * 100}%`
 
+  const desktopHoverOverlay = (
+    <div className="pointer-events-none absolute inset-0 hidden bg-primary/50 p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
+      <div className="mt-auto flex w-full items-center justify-between">
+        <div className="flex items-center gap-2">
+          <img
+            className="size-8 rounded-full"
+            srcSet={`
+              ${image.user.profile_image.small} 1x,
+              ${image.user.profile_image.medium} 2x,
+              ${image.user.profile_image.large} 3x
+            `}
+            src={image.user.profile_image.small}
+            alt=""
+          />
+          <div className="flex flex-col">
+            {/* TODO: Implement user profile and navigation to it */}
+            <Link
+              to="#"
+              className="pointer-events-auto text-sm font-bold text-primary-foreground hover:underline"
+            >
+              {image.user.name}
+            </Link>
+            <p className="text-xs text-primary-foreground/50">
+              {image.user.username}
+            </p>
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          onClick={() =>
+            handleDownload({
+              url: image.urls.regular,
+              imageDescription: image.description || FALLBACK_IMAGE_DESCRIPTION,
+            })
+          }
+          className="pointer-events-auto"
+        >
+          <DownloadIcon size={20} />
+          <span className="font-bold">Download</span>
+        </Button>
+      </div>
+    </div>
+  )
+
   return (
     <figure
       className="group relative h-fit overflow-hidden rounded-lg bg-gray-100"
@@ -59,50 +104,7 @@ export function ImageGridItem({
         />
       </Link>
 
-      {/* Overlay when hovering on desktop */}
-      <div className="pointer-events-none absolute inset-0 hidden bg-primary/50 p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
-        <div className="mt-auto flex w-full items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img
-              className="size-8 rounded-full"
-              srcSet={`
-              ${image.user.profile_image.small} 1x,
-              ${image.user.profile_image.medium} 2x,
-              ${image.user.profile_image.large} 3x
-            `}
-              src={image.user.profile_image.small}
-              alt=""
-            />
-            <div className="flex flex-col">
-              {/* TODO: Implement user profile and navigation to it */}
-              <Link
-                to="#"
-                className="pointer-events-auto text-sm font-bold text-primary-foreground hover:underline"
-              >
-                {image.user.name}
-              </Link>
-              <p className="text-xs text-primary-foreground/50">
-                {image.user.username}
-              </p>
-            </div>
-          </div>
-
-          <Button
-            variant="outline"
-            onClick={() =>
-              handleDownload({
-                url: image.urls.regular,
-                imageDescription:
-                  image.description || FALLBACK_IMAGE_DESCRIPTION,
-              })
-            }
-            className="pointer-events-auto"
-          >
-            <DownloadIcon size={20} />
-            <span className="font-bold">Download</span>
-          </Button>
-        </div>
-      </div>
+      {desktopHoverOverlay}
       <figcaption className="sr-only">Photo by {image.user.name}</figcaption>
     </figure>
   )
