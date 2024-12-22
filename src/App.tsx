@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HomePage } from './pages/home-page'
 import { Route } from 'react-router'
 import { Routes } from 'react-router'
+import { RootLayout } from './layouts/root/RootLayout'
 
 const queryClient = new QueryClient()
 
@@ -10,7 +11,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route element={<RootLayout />}>
+          <Route index element={<HomePage />} />
+        </Route>
       </Routes>
       <ReactQueryDevtools />
     </QueryClientProvider>

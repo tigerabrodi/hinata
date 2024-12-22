@@ -1,4 +1,8 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useCallback } from 'react'
+import { DEFAULT_QUERY_PARAM_VALUES, QUERY_PARAMS } from '@/lib/constants'
+import { useNavigate, useSearchParams } from 'react-router'
+import { useIsFetching } from '@tanstack/react-query'
+import { photoKeys } from '@/lib/queryKeys'
 
 import {
   orderBySchema,
@@ -76,38 +80,77 @@ const COLOR_OPTIONS: Array<{ value: ColorOption; label: string }> = [
   },
 ]
 
-type SearchFormProps = {
-  defaultValue?: string
-  onSearch: (query: string) => void
-  orderBy: SearchParams['orderBy']
-  color?: SearchParams['color']
-  onOrderByChange: (value: SearchParams['orderBy']) => void
-  onColorChange: (value: SearchParams['color']) => void
-  isLoading: boolean
-}
+export function SearchForm() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
 
-export function SearchForm({
-  defaultValue = '',
-  onSearch,
-  orderBy,
-  color,
-  onOrderByChange,
-  onColorChange,
-  isLoading,
-}: SearchFormProps) {
-  const [inputValue, setInputValue] = useState(defaultValue)
+  const currentParams: SearchParams = {
+    query: searchParams.get(QUERY_PARAMS.query) || '',
+    page: Number(searchParams.get(QUERY_PARAMS.page)) || 1,
+    color:
+      (searchParams.get(QUERY_PARAMS.color) as SearchParams['color']) ||
+      undefined,
+    orderBy:
+      (searchParams.get(QUERY_PARAMS.orderBy) as SearchParams['orderBy']) ||
+      DEFAULT_QUERY_PARAM_VALUES.orderBy,
+    perPage: DEFAULT_QUERY_PARAM_VALUES.perPage,
+  }
+
+  const [inputValue, setInputValue] = useState(currentParams.query)
   const searchId = useId()
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmedValue = inputValue.trim()
     if (!trimmedValue || isLoading) return
-    onSearch(trimmedValue)
+
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set(QUERY_PARAMS.query, trimmedValue)
+    newParams.set(QUERY_PARAMS.page, DEFAULT_QUERY_PARAM_VALUES.page.toString())
+
+    navigate(`/?${newParams.toString()}`)
   }
+
+  const updateParams = useCallback(
+    (updates: Partial<SearchParams>) => {
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev)
+
+        Object.entries(updates).forEach(([key, value]) => {
+          if (value) {
+            newParams.set(key, String(value))
+          } else {
+            newParams.delete(key)
+          }
+        })
+
+        if ('color' in updates || 'orderBy' in updates) {
+          newParams.set(
+            QUERY_PARAMS.page,
+            DEFAULT_QUERY_PARAM_VALUES.page.toString()
+          )
+        }
+
+        return newParams
+      })
+    },
+    [setSearchParams]
+  )
+
+  const queriesFetchingSearchResults = useIsFetching({
+    queryKey: photoKeys.searchResults({
+      orderBy: currentParams.orderBy,
+      perPage: currentParams.perPage,
+      color: currentParams.color,
+      query: currentParams.query,
+    }),
+  })
+
+  const isLoading = queriesFetchingSearchResults > 0
 
   return (
     <form
-      className="flex w-full flex-col justify-between gap-4 md:flex-row md:items-center md:gap-10"
+      className="container sticky top-0 z-50 mx-auto flex flex-col justify-between gap-4 bg-background px-4 py-6 md:flex-row md:items-center md:gap-10"
       onSubmit={handleSubmit}
     >
       <div className="flex flex-1 items-center gap-4">
@@ -132,8 +175,10 @@ export function SearchForm({
 
       <div className="flex flex-row items-center gap-2">
         <Select
-          value={orderBy}
-          onValueChange={(value) => onOrderByChange(orderBySchema.parse(value))}
+          value={currentParams.orderBy}
+          onValueChange={(value) =>
+            updateParams({ orderBy: orderBySchema.parse(value) })
+          }
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sort by" />
@@ -148,8 +193,10 @@ export function SearchForm({
         </Select>
 
         <Select
-          value={color ?? ''}
-          onValueChange={(value) => onColorChange(colorSchema.parse(value))}
+          value={currentParams.color ?? ''}
+          onValueChange={(value) =>
+            updateParams({ color: colorSchema.parse(value) })
+          }
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by color" />

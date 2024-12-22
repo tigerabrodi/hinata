@@ -2,7 +2,6 @@ import { SearchParams } from '@/lib/schemas'
 import { useCallback, useEffect, useRef } from 'react'
 import { useImageSearch } from './useImageSearch'
 import { DEFAULT_QUERY_PARAM_VALUES, QUERY_PARAMS } from '@/lib/constants'
-import { SearchForm } from './SearchForm'
 import { ImageGridSkeleton } from './ImageGridSkeleton'
 import { ImageGrid, type ImageWithPageIndex } from './ImageGrid'
 import { useSearchParams } from 'react-router'
@@ -29,33 +28,10 @@ export function HomePage() {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useImageSearch(currentParams, currentParams.page)
-
-  const updateParams = useCallback(
-    (updates: Partial<SearchParams>) => {
-      setSearchParams((prev) => {
-        const newParams = new URLSearchParams(prev)
-
-        Object.entries(updates).forEach(([key, value]) => {
-          if (value) {
-            newParams.set(key, String(value))
-          } else {
-            newParams.delete(key)
-          }
-        })
-
-        if ('color' in updates || 'orderBy' in updates) {
-          newParams.set(
-            QUERY_PARAMS.page,
-            DEFAULT_QUERY_PARAM_VALUES.page.toString()
-          )
-        }
-
-        return newParams
-      })
-    },
-    [setSearchParams]
-  )
+  } = useImageSearch({
+    params: currentParams,
+    initialPage: currentParams.page,
+  })
 
   const handleLoadMore = useCallback(() => {
     fetchNextPage().then(() => {
@@ -69,21 +45,6 @@ export function HomePage() {
       )
     })
   }, [fetchNextPage, setSearchParams, currentParams.page])
-
-  const handleSearch = useCallback(
-    (query: string) => {
-      setSearchParams((prev) => {
-        const newParams = new URLSearchParams(prev)
-        newParams.set(QUERY_PARAMS.query, query)
-        newParams.set(
-          QUERY_PARAMS.page,
-          DEFAULT_QUERY_PARAM_VALUES.page.toString()
-        )
-        return newParams
-      })
-    },
-    [setSearchParams]
-  )
 
   const allImagesWithPages: Array<ImageWithPageIndex> =
     data?.pages.flatMap((page, pageIndex) =>
@@ -105,17 +66,8 @@ export function HomePage() {
     : ''
 
   return (
-    <main className="container mx-auto flex w-full flex-col gap-6 p-10">
+    <main className="container mx-auto flex w-full flex-col gap-3 px-4">
       <h1 className="text-2xl font-bold">Unsplash search</h1>
-      <SearchForm
-        isLoading={isLoading}
-        defaultValue={currentParams.query}
-        onSearch={handleSearch}
-        orderBy={currentParams.orderBy}
-        color={currentParams.color}
-        onOrderByChange={(value) => updateParams({ orderBy: value })}
-        onColorChange={(value) => updateParams({ color: value })}
-      />
       <SearchResults
         isLoading={isLoading}
         hasResults={hasResults}
