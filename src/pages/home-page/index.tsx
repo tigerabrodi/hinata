@@ -1,9 +1,8 @@
 import { SearchParams } from '@/lib/schemas'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useImageSearch } from './useImageSearch'
 import { DEFAULT_QUERY_PARAM_VALUES, QUERY_PARAMS } from '@/lib/constants'
 import { SearchForm } from './SearchForm'
-import { Button } from '@/components/ui/button'
 import { ImageGridSkeleton } from './ImageGridSkeleton'
 import { ImageGrid, type ImageWithPageIndex } from './ImageGrid'
 import { useSearchParams } from 'react-router'
@@ -153,24 +152,26 @@ function SearchResults({
   isFetchingNextPage: boolean
   handleLoadMore: () => void
 }) {
-  const observerRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (!node || !hasNextPage || isFetchingNextPage) return
+  const observerRef = useRef<HTMLDivElement>(null)
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            handleLoadMore()
-          }
-        },
-        { threshold: 0.5 }
-      )
+  useEffect(() => {
+    const node = observerRef.current
+    if (!node || !hasNextPage || isFetchingNextPage) return
 
-      observer.observe(node)
-      return () => observer.disconnect()
-    },
-    [hasNextPage, isFetchingNextPage, handleLoadMore]
-  )
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          handleLoadMore()
+        }
+      },
+      { threshold: 0.5 }
+    )
+
+    observer.observe(node)
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
 
   if (isLoading) {
     return <ImageGridSkeleton count={DEFAULT_QUERY_PARAM_VALUES.perPage} />
