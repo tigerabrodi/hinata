@@ -24,6 +24,8 @@ export const photoSchema = z.object({
     small: z.string().url(),
     regular: z.string().url(),
   }),
+  width: z.number(),
+  height: z.number(),
 })
 
 export const searchParamsSchema = z.object({

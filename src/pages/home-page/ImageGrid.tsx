@@ -9,7 +9,7 @@ export type ImageWithPageIndex = {
 
 export function ImageGrid({ images }: { images: Array<ImageWithPageIndex> }) {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 grid-rows-[0px] gap-4 md:grid-cols-2 lg:grid-cols-3">
       {images.map(({ image, pageIndex }) => {
         const isImageAmongPaginatedResults =
           pageIndex + 1 !== DEFAULT_QUERY_PARAM_VALUES.page
