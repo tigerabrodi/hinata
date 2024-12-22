@@ -153,6 +153,25 @@ function SearchResults({
   isFetchingNextPage: boolean
   handleLoadMore: () => void
 }) {
+  const observerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node || !hasNextPage || isFetchingNextPage) return
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            handleLoadMore()
+          }
+        },
+        { threshold: 0.5 }
+      )
+
+      observer.observe(node)
+      return () => observer.disconnect()
+    },
+    [hasNextPage, isFetchingNextPage, handleLoadMore]
+  )
+
   if (isLoading) {
     return <ImageGridSkeleton count={DEFAULT_QUERY_PARAM_VALUES.perPage} />
   }
@@ -162,15 +181,7 @@ function SearchResults({
       <div className="flex flex-1 flex-col gap-4">
         <p className="text-lg font-bold">{itemsCountMessage}</p>
         <ImageGrid images={allImagesWithPages} />
-        {hasNextPage && (
-          <Button
-            type="button"
-            onClick={handleLoadMore}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? 'Loading...' : 'Load more'}
-          </Button>
-        )}
+        {hasNextPage && <div ref={observerRef} className="h-10 w-full" />}
       </div>
     )
   }
