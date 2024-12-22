@@ -106,7 +106,7 @@ export function HomePage() {
     : ''
 
   return (
-    <main className="mx-auto flex min-h-full w-full max-w-[1200px] flex-col gap-6 p-10">
+    <main className="container mx-auto flex min-h-full w-full flex-col gap-6 p-10">
       <h1 className="text-2xl font-bold">Unsplash search</h1>
       <SearchForm
         isLoading={isLoading}
