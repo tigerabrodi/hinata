@@ -26,6 +26,15 @@ export const photoSchema = z.object({
   }),
   width: z.number(),
   height: z.number(),
+  user: z.object({
+    name: z.string(),
+    username: z.string(),
+    profile_image: z.object({
+      small: z.string().url(),
+      medium: z.string().url(),
+      large: z.string().url(),
+    }),
+  }),
 })
 
 export const searchParamsSchema = z.object({
