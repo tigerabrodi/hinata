@@ -28,8 +28,8 @@ export const photoSchema = z.object({
   }),
   location: z
     .object({
-      city: z.string(),
-      country: z.string(),
+      city: z.string().nullable(),
+      country: z.string().nullable(),
     })
     .optional(),
   tags: z.array(z.object({ title: z.string() })).optional(),
