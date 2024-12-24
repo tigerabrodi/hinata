@@ -23,16 +23,34 @@ const getOptimizedFullscreenUrl = (rawUrl: string) => {
   return `${rawUrl}&w=2560&dpr=2&fm=jpg&q=85&fit=max&auto=format`
 }
 
+function PhotoDetailSkeleton() {
+  return (
+    <main className="container relative mx-auto flex w-full flex-col gap-4 pb-16">
+      {/* Header shimmer */}
+      <div className="flex items-center gap-2 p-4">
+        <div className="size-10 animate-pulse rounded-full bg-muted" />
+        <div className="flex flex-col gap-2">
+          <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+          <div className="h-3 w-16 animate-pulse rounded bg-muted" />
+        </div>
+      </div>
+
+      {/* Image shimmer */}
+      <div className="mx-auto aspect-square w-full max-w-[900px] animate-pulse rounded-lg bg-muted md:aspect-[2/3]" />
+    </main>
+  )
+}
+
 export function PhotoDetailPage() {
   const { id } = useParams()
 
   const isDesktop = useMediaQuery(breakpoints.md)
+  const { data: image, isLoading, isError } = usePhotoDetail(id)
 
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [optimizedFullscreenUrl, setOptimizedFullscreenUrl] = useState<
     string | null
   >(null)
-  const { data: image, isLoading, isError } = usePhotoDetail(id)
 
   useEffect(() => {
     if (isFullscreen) {
@@ -82,7 +100,7 @@ export function PhotoDetailPage() {
   }
 
   if (isLoading || !image) {
-    return <div>Loading...</div>
+    return <PhotoDetailSkeleton />
   }
 
   if (isError) {
@@ -207,7 +225,8 @@ export function PhotoDetailPage() {
       </div>
 
       <div className="flex flex-col gap-4 p-4 md:px-0">
-        {image.location && (
+        {/* city and country can still be null */}
+        {image.location && image.location.city && image.location.country && (
           <div className="flex items-center gap-2">
             <span className="font-bold text-primary">Location: </span>
             <span className="text-primary">
@@ -217,7 +236,7 @@ export function PhotoDetailPage() {
         )}
 
         {image.tags && (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex max-w-[800px] flex-wrap items-center gap-2">
             {image.tags.map((tag) => (
               <Badge
                 key={tag.title}
