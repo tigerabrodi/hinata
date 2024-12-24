@@ -153,7 +153,7 @@ export function SearchForm() {
 
   return (
     <form
-      className="container sticky top-0 z-50 mx-auto flex flex-col justify-between gap-4 bg-background px-4 py-6 md:flex-row md:items-center md:gap-10"
+      className="container sticky top-0 z-50 mx-auto flex flex-col justify-between gap-4 bg-background px-4 py-6 md:flex-row md:items-center md:gap-10 md:px-0"
       onSubmit={handleSubmit}
     >
       <div className="flex flex-1 items-center gap-4">
