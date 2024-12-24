@@ -34,16 +34,20 @@ export function HomePage() {
   })
 
   const handleLoadMore = useCallback(() => {
-    fetchNextPage().then(() => {
-      setSearchParams(
-        (prev) => {
-          const newParams = new URLSearchParams(prev)
-          newParams.set(QUERY_PARAMS.page, String(currentParams.page + 1))
-          return newParams
-        },
-        { replace: true }
-      )
-    })
+    fetchNextPage()
+      .then(() => {
+        setSearchParams(
+          (prev) => {
+            const newParams = new URLSearchParams(prev)
+            newParams.set(QUERY_PARAMS.page, String(currentParams.page + 1))
+            return newParams
+          },
+          { replace: true }
+        )
+      })
+      .catch((error) => {
+        console.error('Error fetching next page', error)
+      })
   }, [fetchNextPage, setSearchParams, currentParams.page])
 
   const allImagesWithPages: Array<ImageWithPageIndex> =

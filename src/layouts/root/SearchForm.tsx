@@ -22,6 +22,9 @@ import {
 } from '@/components/ui/select'
 import { Search as SearchIcon } from 'lucide-react'
 
+// Observed from the dev tools
+export const SEARCH_FORM_HEIGHT = 136
+
 const SORT_OPTIONS: Array<{ value: SearchParams['orderBy']; label: string }> = [
   {
     value: 'relevant',

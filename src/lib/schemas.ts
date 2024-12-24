@@ -23,7 +23,16 @@ export const photoSchema = z.object({
   urls: z.object({
     small: z.string().url(),
     regular: z.string().url(),
+    full: z.string().url(),
+    raw: z.string().url(),
   }),
+  location: z
+    .object({
+      city: z.string(),
+      country: z.string(),
+    })
+    .optional(),
+  tags: z.array(z.object({ title: z.string() })).optional(),
   width: z.number(),
   height: z.number(),
   user: z.object({
@@ -45,14 +54,7 @@ export const searchParamsSchema = z.object({
   color: colorSchema.optional(),
 })
 
-export const searchResponseSchema = z.object({
-  total: z.number(),
-  total_pages: z.number(),
-  results: z.array(photoSchema),
-})
-
 export type Photo = z.infer<typeof photoSchema>
-export type SearchResponse = z.infer<typeof searchResponseSchema>
 export type SearchParams = z.infer<typeof searchParamsSchema>
 export type ColorOption = z.infer<typeof colorSchema>
 export type OrderByOption = z.infer<typeof orderBySchema>

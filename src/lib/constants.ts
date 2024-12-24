@@ -19,3 +19,9 @@ export const QUERY_PARAMS = {
   orderBy: 'orderBy',
   perPage: 'perPage',
 } as const
+
+export const ROUTES = {
+  home: '/',
+  user: '/user/:username',
+  photoDetail: '/photos/:id',
+} as const

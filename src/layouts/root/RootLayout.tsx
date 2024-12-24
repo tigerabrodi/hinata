@@ -3,7 +3,7 @@ import { SearchForm } from './SearchForm'
 
 export function RootLayout() {
   return (
-    <div className="relative flex min-h-full w-full flex-col gap-4">
+    <div className="relative flex min-h-full w-full flex-col">
       <SearchForm />
       <Outlet />
     </div>

@@ -1,12 +1,14 @@
 import { Button } from '@/components/ui/button'
+import { ROUTES } from '@/lib/constants'
 import { Photo } from '@/lib/schemas'
 import { handleDownload } from '@/lib/utils'
 import { DownloadIcon } from 'lucide-react'
 import { Blurhash } from 'react-blurhash'
-import { Link } from 'react-router'
+import { generatePath, Link, useLocation } from 'react-router'
 
 // This is a number you can play around with
 // you might even want different ones for desktop vs mobile depending on the images you're serving
+// 22 seems to work well on both mobile and desktop
 const MULTIPLIER_TO_TURN_ASPECT_RATIO_INTO_ROWS_TO_SPAN = 22
 
 const FALLBACK_IMAGE_DESCRIPTION = 'Unsplash photo'
@@ -18,6 +20,8 @@ export function ImageGridItem({
   image: Photo
   shouldLazyLoad: boolean
 }) {
+  const location = useLocation()
+
   const rowsToSpanBasedOnAspectRatio = Math.ceil(
     (image.height / image.width) *
       MULTIPLIER_TO_TURN_ASPECT_RATIO_INTO_ROWS_TO_SPAN
@@ -40,9 +44,8 @@ export function ImageGridItem({
             alt=""
           />
           <div className="flex flex-col">
-            {/* TODO: Implement user profile and navigation to it */}
             <Link
-              to="#"
+              to={generatePath(ROUTES.user, { username: image.user.username })}
               className="pointer-events-auto text-sm font-bold text-primary-foreground hover:underline"
             >
               {image.user.name}
@@ -83,9 +86,8 @@ export function ImageGridItem({
         alt=""
       />
       <div className="flex flex-col">
-        {/* TODO: Implement user profile and navigation to it */}
         <Link
-          to="#"
+          to={generatePath(ROUTES.user, { username: image.user.username })}
           className="pointer-events-auto text-sm font-bold text-primary hover:underline"
         >
           {image.user.name}
@@ -122,8 +124,12 @@ export function ImageGridItem({
 
       {/* Link by default are inline elements that won't span the full width of the parent */}
       {/* Block span full width of parent and start on new lines */}
-      {/* TODO: implement link and photo details */}
-      <Link to="#" className="relative block w-full" style={{ paddingBottom }}>
+      <Link
+        to={generatePath(ROUTES.photoDetail, { id: image.id })}
+        state={{ background: location }}
+        className="relative block w-full"
+        style={{ paddingBottom }}
+      >
         {image.blur_hash ? (
           <div className="absolute inset-0">
             <Blurhash hash={image.blur_hash} width="100%" height="100%" />

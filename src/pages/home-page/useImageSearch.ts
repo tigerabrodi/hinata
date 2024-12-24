@@ -52,8 +52,8 @@ export function useImageSearch({
       }
     }
 
-    loadUpToInitialPage()
-  }, [query.data?.pages.length, initialPage, params.query, query.fetchNextPage])
+    loadUpToInitialPage().catch(console.error)
+  }, [initialPage, params.query, query])
 
   return query
 }
