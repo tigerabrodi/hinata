@@ -16,7 +16,7 @@ export function ImageGrid({
   const isDesktop = useMediaQuery(breakpoints.md)
 
   return (
-    <div className="grid grid-cols-1 grid-rows-[0px] gap-[18px] md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+    <div className="grid grid-cols-1 grid-rows-[0px] gap-4 md:grid-cols-2 lg:grid-cols-3">
       {images.map((data, index) => {
         // On mobile we show a single column layout
         const isImageAmongFirstResults = index < 3
