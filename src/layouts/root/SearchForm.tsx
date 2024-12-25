@@ -111,7 +111,7 @@ export function SearchForm() {
     newParams.set(QUERY_PARAMS.query, trimmedValue)
     newParams.set(QUERY_PARAMS.page, DEFAULT_QUERY_PARAM_VALUES.page.toString())
 
-    navigate(`/?${newParams.toString()}`)
+    void navigate(`/?${newParams.toString()}`)
   }
 
   const updateParams = useCallback(
