@@ -3,7 +3,7 @@ import { api } from '@/lib/api'
 import { ROUTES } from '@/lib/constants'
 import { photoKeys, userKeys } from '@/lib/queryKeys'
 import { Photo } from '@/lib/schemas'
-import { handleDownload } from '@/lib/utils'
+import { cn, handleDownload } from '@/lib/utils'
 import {
   USER_DETAIL_PHOTOS_PAGE_INDEX,
   USER_DETAIL_PHOTOS_PER_PAGE,
@@ -13,6 +13,7 @@ import { DownloadIcon } from 'lucide-react'
 import { Blurhash } from 'react-blurhash'
 import { generatePath, Link, useLocation } from 'react-router'
 import { ProfileImage } from '../core/ProfileImage'
+import { useState } from 'react'
 
 // This is a number you can play around with
 // you might even want different ones for desktop vs mobile depending on the images you're serving
@@ -29,6 +30,8 @@ export function ImageGridItem({
   shouldLazyLoad: boolean
 }) {
   const location = useLocation()
+
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
 
   const queryClient = useQueryClient()
 
@@ -177,10 +180,16 @@ export function ImageGridItem({
          100vw"
           src={image.urls.small}
           alt={image.description || `Photo by ${image.user.name}`}
-          className="absolute inset-0 h-full w-full object-cover"
+          className={cn(
+            'absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-in-out',
+            {
+              'opacity-100': isImageLoaded,
+            }
+          )}
           loading={shouldLazyLoad ? 'lazy' : 'eager'}
           decoding="async"
           fetchPriority={!shouldLazyLoad ? 'high' : 'auto'}
+          onLoad={() => setIsImageLoaded(true)}
         />
       </Link>
 
