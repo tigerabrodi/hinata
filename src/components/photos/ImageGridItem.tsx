@@ -35,6 +35,13 @@ export function ImageGridItem({
 
   const queryClient = useQueryClient()
 
+  // We do height / width to maintain the right proportions for height specifically
+  // e.g height 800px and width 1200px
+  // 800 / 1200 = 0.66
+  // 0.66 means for every 1px of width, there are 0.66px of height
+  // 0.66 * 22 = 14.66
+  // Math.ceil(14.66) = 15
+  // So the image will span 15 rows
   const rowsToSpanBasedOnAspectRatio = Math.ceil(
     (image.height / image.width) *
       MULTIPLIER_TO_TURN_ASPECT_RATIO_INTO_ROWS_TO_SPAN
