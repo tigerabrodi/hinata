@@ -12,6 +12,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { ZoomOutIcon } from '@/icons/ZoomOut'
 import { ZoomInIcon } from '@/icons/ZoomIn'
 import { Blurhash } from 'react-blurhash'
+import { useNavigate } from 'react-router'
+import { DEFAULT_QUERY_PARAM_VALUES, QUERY_PARAMS } from '@/lib/constants'
 
 const getOptimizedFullscreenUrl = (rawUrl: string) => {
   // Typical 4K monitor width is 3840px, but 2560px is often sufficient
@@ -42,6 +44,7 @@ function PhotoDetailSkeleton() {
 }
 
 export function PhotoDetailPage() {
+  const navigate = useNavigate()
   const { id } = useParams()
 
   const isDesktop = useMediaQuery(breakpoints.md)
@@ -241,7 +244,13 @@ export function PhotoDetailPage() {
               <Badge
                 key={tag.title}
                 variant="outline"
-                className="rounded-sm bg-muted text-sm text-muted-foreground"
+                className="rounded-sm bg-muted text-sm text-muted-foreground cursor-pointer hover:scale-110"
+                onClick={() => {
+                  const newParams = new URLSearchParams(window.location.search);
+                  newParams.set(QUERY_PARAMS.query, tag.title);
+                  newParams.set(QUERY_PARAMS.page, DEFAULT_QUERY_PARAM_VALUES.page.toString());
+                  navigate(`/?${newParams.toString()}`);
+                }}
               >
                 {tag.title}
               </Badge>
