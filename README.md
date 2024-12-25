@@ -4,6 +4,8 @@ Built with Unsplash API. A site where you can search and download images.
 
 Had a lot of fun geeking out on performance.
 
+https://github.com/user-attachments/assets/d489615c-454b-4352-af7a-f43c5ea487ee
+
 # Get it up and running
 
 First, clone the repo and install the dependencies:
