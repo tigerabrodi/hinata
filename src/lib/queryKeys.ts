@@ -21,3 +21,15 @@ export const photoKeys = {
     return [...photoKeys.search(), ...queryParams] as const
   },
 } as const
+
+export const userKeys = {
+  all: ['users'] as const,
+  detail: (username: string | undefined) =>
+    username
+      ? ([...userKeys.all, username] as const)
+      : ([PLACEHOLDER] as const),
+  photos: (username: string | undefined) =>
+    username
+      ? ([...userKeys.all, username, 'photos'] as const)
+      : ([PLACEHOLDER] as const),
+} as const

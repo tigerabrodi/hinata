@@ -22,6 +22,7 @@ export const QUERY_PARAMS = {
 
 export const ROUTES = {
   home: '/',
-  user: '/user/:username',
+  user: '/users/:username',
   photoDetail: '/photos/:id',
+  userDetail: '/users/:username',
 } as const

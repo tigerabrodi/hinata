@@ -16,6 +16,21 @@ export const colorSchema = z.enum([
 
 export const orderBySchema = z.enum(['latest', 'relevant'])
 
+export const userSchema = z.object({
+  name: z.string(),
+  username: z.string(),
+  bio: z.string().nullable(),
+  location: z.string().nullable(),
+  total_photos: z.number(),
+  profile_image: z.object({
+    small: z.string().url(),
+    medium: z.string().url(),
+    large: z.string().url(),
+  }),
+})
+
+export type User = z.infer<typeof userSchema>
+
 export const photoSchema = z.object({
   id: z.string(),
   description: z.string().nullable(),
@@ -35,15 +50,7 @@ export const photoSchema = z.object({
   tags: z.array(z.object({ title: z.string() })).optional(),
   width: z.number(),
   height: z.number(),
-  user: z.object({
-    name: z.string(),
-    username: z.string(),
-    profile_image: z.object({
-      small: z.string().url(),
-      medium: z.string().url(),
-      large: z.string().url(),
-    }),
-  }),
+  user: userSchema,
 })
 
 export const searchParamsSchema = z.object({

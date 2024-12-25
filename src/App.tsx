@@ -6,6 +6,7 @@ import { Routes } from 'react-router'
 import { RootLayout } from './layouts/root/RootLayout'
 import { ROUTES } from './lib/constants'
 import { PhotoDetailPage } from './pages/photo-detail-page'
+import { UserDetailPage } from './pages/user-detail-page'
 
 const queryClient = new QueryClient()
 
@@ -16,6 +17,7 @@ function App() {
         <Route element={<RootLayout />}>
           <Route index element={<HomePage />} />
           <Route path={ROUTES.photoDetail} element={<PhotoDetailPage />} />
+          <Route path={ROUTES.userDetail} element={<UserDetailPage />} />
         </Route>
       </Routes>
       <ReactQueryDevtools />

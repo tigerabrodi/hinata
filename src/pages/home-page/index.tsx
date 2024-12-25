@@ -1,10 +1,11 @@
 import { SearchParams } from '@/lib/schemas'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback } from 'react'
 import { useImageSearch } from './useImageSearch'
 import { DEFAULT_QUERY_PARAM_VALUES, QUERY_PARAMS } from '@/lib/constants'
-import { ImageGridSkeleton } from './ImageGridSkeleton'
-import { ImageGrid, type ImageWithPageIndex } from './ImageGrid'
+
 import { useSearchParams } from 'react-router'
+import { ImageWithPageIndex } from '@/components/photos/ImageGrid'
+import { SearchResults } from './SearchResults'
 
 export function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -30,7 +31,6 @@ export function HomePage() {
     fetchNextPage,
   } = useImageSearch({
     params: currentParams,
-    initialPage: currentParams.page,
   })
 
   const handleLoadMore = useCallback(() => {
@@ -71,7 +71,7 @@ export function HomePage() {
 
   return (
     <main className="container mx-auto flex w-full flex-col gap-3 px-4">
-      <h1 className="text-2xl font-bold">Unsplash search</h1>
+      <h1 className="sr-only">Unsplash search</h1>
       <SearchResults
         isLoading={isLoading}
         hasResults={hasResults}
@@ -85,82 +85,4 @@ export function HomePage() {
       />
     </main>
   )
-}
-
-function SearchResults({
-  isLoading,
-  hasResults,
-  hasNoResults,
-  isError,
-  itemsCountMessage,
-  allImagesWithPages,
-  hasNextPage,
-  isFetchingNextPage,
-  handleLoadMore,
-}: {
-  isLoading: boolean
-  hasResults: boolean
-  hasNoResults: boolean
-  isError: boolean
-  itemsCountMessage: string
-  allImagesWithPages: Array<ImageWithPageIndex>
-  hasNextPage: boolean
-  isFetchingNextPage: boolean
-  handleLoadMore: () => void
-}) {
-  const observerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const node = observerRef.current
-    if (!node || !hasNextPage || isFetchingNextPage) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          handleLoadMore()
-        }
-      },
-      { threshold: 0.5 }
-    )
-
-    observer.observe(node)
-    return () => {
-      observer.disconnect()
-    }
-  }, [hasNextPage, isFetchingNextPage, handleLoadMore])
-
-  if (isLoading) {
-    return <ImageGridSkeleton count={DEFAULT_QUERY_PARAM_VALUES.perPage} />
-  }
-
-  if (hasResults) {
-    return (
-      <div className="flex flex-1 flex-col gap-4">
-        <p className="text-lg font-bold">{itemsCountMessage}</p>
-        <ImageGrid images={allImagesWithPages} />
-        {hasNextPage && <div ref={observerRef} className="h-10 w-full" />}
-      </div>
-    )
-  }
-
-  if (hasNoResults) {
-    return (
-      <div className="flex w-full flex-1 items-center justify-center pt-10 text-center">
-        <p className="text-lg font-bold">No results</p>
-      </div>
-    )
-  }
-
-  if (isError) {
-    return (
-      <div className="flex w-full flex-1 flex-col items-center justify-center gap-4 pt-10 text-center">
-        <p className="text-lg font-bold">
-          An error occurred while fetching images.
-        </p>
-        <p className="text-sm text-gray-500">Please try again later.</p>
-      </div>
-    )
-  }
-
-  return null
 }
