@@ -51,8 +51,14 @@ function UserHeader({ username }: { username: string | undefined }) {
     data: user,
   } = useGetUser(username)
 
+  if (isUserError)
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-muted-foreground">Error fetching user</p>
+      </div>
+    )
+
   if (isUserLoading || !user) return <UserHeaderSkeleton />
-  if (isUserError) return <div>Error</div>
 
   return (
     <div className="relative flex flex-col items-center gap-4 border-b pb-4">
@@ -103,7 +109,12 @@ function UserPhotos({ username }: { username: string | undefined }) {
     queryParams: currentParams,
   })
 
-  if (isPhotosError) return <div>Error</div>
+  if (isPhotosError)
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-muted-foreground">Error fetching photos</p>
+      </div>
+    )
 
   if (isPhotosLoading || !photos)
     return <ImageGridSkeleton count={USER_DETAIL_PHOTOS_PER_PAGE} />
