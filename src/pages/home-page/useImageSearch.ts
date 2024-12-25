@@ -5,13 +5,7 @@ import { api } from '@/lib/api'
 import { STALE_TIME } from '@/lib/constants'
 import { useEffect } from 'react'
 
-export function useImageSearch({
-  params,
-  initialPage = 1,
-}: {
-  params: Omit<SearchParams, 'page'>
-  initialPage: number
-}) {
+export function useImageSearch({ params }: { params: SearchParams }) {
   const query = useInfiniteQuery({
     queryKey: photoKeys.searchResults({
       query: params.query,
@@ -24,7 +18,7 @@ export function useImageSearch({
         ...params,
         page: pageParam,
       }),
-    initialPageParam: 1,
+    initialPageParam: params.page,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       const hasNoMorePages = lastPageParam >= lastPage.total_pages
       if (hasNoMorePages) {
@@ -42,7 +36,7 @@ export function useImageSearch({
     const loadUpToInitialPage = async () => {
       const loadedPages = query.data.pages.length
 
-      if (loadedPages < initialPage) {
+      if (loadedPages < params.page) {
         try {
           await query.fetchNextPage()
         } catch (error) {
@@ -53,7 +47,7 @@ export function useImageSearch({
     }
 
     loadUpToInitialPage().catch(console.error)
-  }, [initialPage, params.query, query])
+  }, [params.page, params.query, query])
 
   return query
 }
