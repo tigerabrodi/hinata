@@ -1,7 +1,14 @@
 import { Button } from '@/components/ui/button'
+import { api } from '@/lib/api'
 import { ROUTES } from '@/lib/constants'
+import { photoKeys, userKeys } from '@/lib/queryKeys'
 import { Photo } from '@/lib/schemas'
 import { handleDownload } from '@/lib/utils'
+import {
+  USER_DETAIL_PHOTOS_PAGE_INDEX,
+  USER_DETAIL_PHOTOS_PER_PAGE,
+} from '@/pages/user-detail-page'
+import { useQueryClient } from '@tanstack/react-query'
 import { DownloadIcon } from 'lucide-react'
 import { Blurhash } from 'react-blurhash'
 import { generatePath, Link, useLocation } from 'react-router'
@@ -22,6 +29,8 @@ export function ImageGridItem({
 }) {
   const location = useLocation()
 
+  const queryClient = useQueryClient()
+
   const rowsToSpanBasedOnAspectRatio = Math.ceil(
     (image.height / image.width) *
       MULTIPLIER_TO_TURN_ASPECT_RATIO_INTO_ROWS_TO_SPAN
@@ -36,10 +45,11 @@ export function ImageGridItem({
           <img
             className="size-8 rounded-full"
             srcSet={`
-              ${image.user.profile_image.small} 1x,
-              ${image.user.profile_image.medium} 2x,
-              ${image.user.profile_image.large} 3x
+              ${image.user.profile_image.small} 32w,
+              ${image.user.profile_image.medium} 64w,
+              ${image.user.profile_image.large} 128w
             `}
+            sizes="32px"
             src={image.user.profile_image.small}
             alt=""
           />
@@ -82,6 +92,7 @@ export function ImageGridItem({
               ${image.user.profile_image.medium} 2x,
               ${image.user.profile_image.large} 3x
             `}
+        sizes="32px"
         src={image.user.profile_image.small}
         alt=""
       />
@@ -113,9 +124,34 @@ export function ImageGridItem({
     </Button>
   )
 
+  function prefetchData() {
+    void queryClient.prefetchQuery({
+      queryKey: photoKeys.detail(image.id),
+      queryFn: () => api.getPhotoDetail(image.id),
+    })
+
+    void queryClient.prefetchQuery({
+      queryKey: userKeys.detail(image.user.username),
+      queryFn: () => api.getUser(image.user.username),
+    })
+
+    void queryClient.prefetchQuery({
+      queryKey: userKeys.photos(image.user.username),
+      queryFn: () =>
+        api.getUserPhotos({
+          username: image.user.username,
+          queryParams: {
+            page: USER_DETAIL_PHOTOS_PAGE_INDEX,
+            perPage: USER_DETAIL_PHOTOS_PER_PAGE,
+          },
+        }),
+    })
+  }
+
   return (
     <figure
       className="group relative flex h-fit flex-col gap-3 overflow-hidden rounded-lg"
+      onMouseOver={prefetchData}
       style={{
         gridRow: `span ${rowsToSpanBasedOnAspectRatio}`,
       }}
@@ -144,12 +180,14 @@ export function ImageGridItem({
             ${image.urls.regular} 1080w
           `}
           sizes="(min-width: 1024px) 33vw,
-                 (min-width: 768px) 50vw,
-                 100vw"
+         (min-width: 768px) 50vw,
+         100vw"
           src={image.urls.small}
-          alt={image.description || 'Unsplash photo'}
+          alt={image.description || `Photo by ${image.user.name}`}
           className="absolute inset-0 h-full w-full object-cover"
           loading={shouldLazyLoad ? 'lazy' : 'eager'}
+          decoding="async"
+          fetchPriority={!shouldLazyLoad ? 'high' : 'auto'}
         />
       </Link>
 

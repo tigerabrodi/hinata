@@ -11,8 +11,8 @@ import { ImageGridSkeleton } from '@/components/photos/ImageGridSkeleton'
 // Rather, they simply return an array of photos
 // However, we can decide how many photos we want to load
 // I KNOW so annoying, like why let me provide a page number if I can't paginate?!
-const HARD_CODED_PAGE_INDEX = 1
-const USER_PHOTOS_PER_PAGE = 50
+export const USER_DETAIL_PHOTOS_PAGE_INDEX = 1
+export const USER_DETAIL_PHOTOS_PER_PAGE = 50
 
 export function UserDetailPage() {
   const { username } = useParams()
@@ -58,12 +58,15 @@ function UserHeader({ username }: { username: string | undefined }) {
       <img
         className="size-24 rounded-full"
         srcSet={`
-              ${user.profile_image.small} 1x,
-              ${user.profile_image.medium} 2x,
-              ${user.profile_image.large} 3x
-            `}
+          ${user.profile_image.small} 32w,
+          ${user.profile_image.medium} 64w, 
+          ${user.profile_image.large} 128w
+        `}
+        // 96px is the size of the image
+        sizes="96px"
         src={user.profile_image.small}
-        alt=""
+        alt={`${user.name}'s profile picture`}
+        loading="lazy"
       />
 
       <div className="flex flex-col items-center gap-1 text-center">
@@ -93,8 +96,8 @@ function UserHeader({ username }: { username: string | undefined }) {
 
 function UserPhotos({ username }: { username: string | undefined }) {
   const currentParams: Pick<SearchParams, 'page' | 'perPage'> = {
-    page: HARD_CODED_PAGE_INDEX,
-    perPage: USER_PHOTOS_PER_PAGE,
+    page: USER_DETAIL_PHOTOS_PAGE_INDEX,
+    perPage: USER_DETAIL_PHOTOS_PER_PAGE,
   }
 
   const {
@@ -109,7 +112,7 @@ function UserPhotos({ username }: { username: string | undefined }) {
   if (isPhotosError) return <div>Error</div>
 
   if (isPhotosLoading || !photos)
-    return <ImageGridSkeleton count={USER_PHOTOS_PER_PAGE} />
+    return <ImageGridSkeleton count={USER_DETAIL_PHOTOS_PER_PAGE} />
 
   return <ImageGrid images={photos} />
 }

@@ -12,6 +12,13 @@ import { useCallback, useEffect, useState } from 'react'
 import { ZoomOutIcon } from '@/icons/ZoomOut'
 import { ZoomInIcon } from '@/icons/ZoomIn'
 import { Blurhash } from 'react-blurhash'
+import { api } from '@/lib/api'
+import { useQueryClient } from '@tanstack/react-query'
+import { userKeys } from '@/lib/queryKeys'
+import {
+  USER_DETAIL_PHOTOS_PAGE_INDEX,
+  USER_DETAIL_PHOTOS_PER_PAGE,
+} from '../user-detail-page'
 
 const getOptimizedFullscreenUrl = (rawUrl: string) => {
   // Typical 4K monitor width is 3840px, but 2560px is often sufficient
@@ -51,6 +58,8 @@ export function PhotoDetailPage() {
   const [optimizedFullscreenUrl, setOptimizedFullscreenUrl] = useState<
     string | null
   >(null)
+
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (isFullscreen) {
@@ -107,10 +116,32 @@ export function PhotoDetailPage() {
     return <div>Error</div>
   }
 
+  function prefetchUserDetail() {
+    if (!image) return
+
+    void queryClient.prefetchQuery({
+      queryKey: userKeys.detail(image.user.username),
+      queryFn: () => api.getUser(image.user.username),
+    })
+
+    void queryClient.prefetchQuery({
+      queryKey: userKeys.photos(image.user.username),
+      queryFn: () =>
+        api.getUserPhotos({
+          username: image.user.username,
+          queryParams: {
+            page: USER_DETAIL_PHOTOS_PAGE_INDEX,
+            perPage: USER_DETAIL_PHOTOS_PER_PAGE,
+          },
+        }),
+    })
+  }
+
   return (
     <main className="container relative mx-auto flex w-full flex-col pb-16">
       <div
         className="sticky z-20 flex items-center justify-between bg-background p-4 md:static md:px-0"
+        onMouseOver={prefetchUserDetail}
         style={{
           top: !isDesktop ? SEARCH_FORM_HEIGHT : undefined,
         }}
@@ -123,10 +154,11 @@ export function PhotoDetailPage() {
           <img
             className="size-10 rounded-full"
             srcSet={`
-              ${image.user.profile_image.small} 1x,
-              ${image.user.profile_image.medium} 2x,
-              ${image.user.profile_image.large} 3x
+              ${image.user.profile_image.small} 32w,
+              ${image.user.profile_image.medium} 64w,
+              ${image.user.profile_image.large} 128w
             `}
+            sizes="40px"
             src={image.user.profile_image.small}
             alt=""
           />
