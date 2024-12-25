@@ -21,3 +21,19 @@ Run the development server:
 ```bash
 pnpm dev
 ```
+
+# Explanations
+
+<details>
+  <summary>🍿 Image performance</summary>
+
+---
+
+</details>
+
+<details>
+  <summary>🍿 React Query</summary>
+
+---
+
+</details>
