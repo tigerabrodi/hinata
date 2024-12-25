@@ -459,3 +459,16 @@ These are the full elements:
 ```
 
 </details>
+
+# Tech
+
+Built with:
+
+- React
+- React Query
+- React Router 7
+- Shadcn UI
+- Tailwind CSS
+- TypeScript
+- Vite
+- Unsplash API
