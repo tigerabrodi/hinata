@@ -19,6 +19,7 @@ import {
   USER_DETAIL_PHOTOS_PAGE_INDEX,
   USER_DETAIL_PHOTOS_PER_PAGE,
 } from '../user-detail-page'
+import { ProfileImage } from '@/components/core/ProfileImage'
 
 const getOptimizedFullscreenUrl = (rawUrl: string) => {
   // Typical 4K monitor width is 3840px, but 2560px is often sufficient
@@ -151,17 +152,13 @@ export function PhotoDetailPage() {
           className="flex items-center gap-2"
           aria-label={`Go to ${image.user.name}'s profile`}
         >
-          <img
-            className="size-10 rounded-full"
-            srcSet={`
-              ${image.user.profile_image.small} 32w,
-              ${image.user.profile_image.medium} 64w,
-              ${image.user.profile_image.large} 128w
-            `}
+          <ProfileImage
+            profileImage={image.user.profile_image}
+            className="size-10"
             sizes="40px"
-            src={image.user.profile_image.small}
             alt=""
           />
+
           <div className="flex flex-col">
             <span className="font-bold text-primary">{image.user.name}</span>
             <span className="text-sm text-muted-foreground">

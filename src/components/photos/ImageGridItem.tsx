@@ -12,6 +12,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { DownloadIcon } from 'lucide-react'
 import { Blurhash } from 'react-blurhash'
 import { generatePath, Link, useLocation } from 'react-router'
+import { ProfileImage } from '../core/ProfileImage'
 
 // This is a number you can play around with
 // you might even want different ones for desktop vs mobile depending on the images you're serving
@@ -42,17 +43,13 @@ export function ImageGridItem({
     <div className="pointer-events-none absolute inset-0 hidden bg-primary/50 p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
       <div className="mt-auto flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
-          <img
-            className="size-8 rounded-full"
-            srcSet={`
-              ${image.user.profile_image.small} 32w,
-              ${image.user.profile_image.medium} 64w,
-              ${image.user.profile_image.large} 128w
-            `}
+          <ProfileImage
+            profileImage={image.user.profile_image}
+            className="size-8"
             sizes="32px"
-            src={image.user.profile_image.small}
             alt=""
           />
+
           <div className="flex flex-col">
             <Link
               to={generatePath(ROUTES.user, { username: image.user.username })}
@@ -85,17 +82,13 @@ export function ImageGridItem({
 
   const mobileHeader = (
     <div className="flex items-center gap-2 md:hidden">
-      <img
-        className="size-8 rounded-full"
-        srcSet={`
-              ${image.user.profile_image.small} 1x,
-              ${image.user.profile_image.medium} 2x,
-              ${image.user.profile_image.large} 3x
-            `}
+      <ProfileImage
+        profileImage={image.user.profile_image}
+        className="size-8"
         sizes="32px"
-        src={image.user.profile_image.small}
         alt=""
       />
+
       <div className="flex flex-col">
         <Link
           to={generatePath(ROUTES.user, { username: image.user.username })}

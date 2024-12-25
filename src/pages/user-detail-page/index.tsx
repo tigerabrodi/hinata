@@ -5,6 +5,7 @@ import { SearchParams } from '@/lib/schemas'
 import { useGetUserPhotos } from './useGetUserPhotos'
 import { ImageGrid } from '@/components/photos/ImageGrid'
 import { ImageGridSkeleton } from '@/components/photos/ImageGridSkeleton'
+import { ProfileImage } from '@/components/core/ProfileImage'
 
 // The reason for hardcoding and not doing what we did in the home page:
 // ...Unsplash API doesn't return results as paginated results for `/users/:username/photos` endpoint
@@ -55,18 +56,11 @@ function UserHeader({ username }: { username: string | undefined }) {
 
   return (
     <div className="relative flex flex-col items-center gap-4 border-b pb-4">
-      <img
-        className="size-24 rounded-full"
-        srcSet={`
-          ${user.profile_image.small} 32w,
-          ${user.profile_image.medium} 64w, 
-          ${user.profile_image.large} 128w
-        `}
-        // 96px is the size of the image
+      <ProfileImage
+        profileImage={user.profile_image}
+        className="size-24"
         sizes="96px"
-        src={user.profile_image.small}
         alt={`${user.name}'s profile picture`}
-        loading="lazy"
       />
 
       <div className="flex flex-col items-center gap-1 text-center">
