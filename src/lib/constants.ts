@@ -1,10 +1,6 @@
 const ONE_SECOND_IN_MS = 1000
 const ONE_MINUTE_IN_MS = ONE_SECOND_IN_MS * 60
-const FIVE_MINUTES_IN_MS = ONE_MINUTE_IN_MS * 5
-
-export const STALE_TIME = {
-  SEARCH_RESULTS: FIVE_MINUTES_IN_MS,
-} as const
+export const FIVE_MINUTES_IN_MS = ONE_MINUTE_IN_MS * 5
 
 export const DEFAULT_QUERY_PARAM_VALUES = {
   page: 1,

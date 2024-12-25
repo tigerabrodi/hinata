@@ -2,7 +2,6 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { type SearchParams } from '@/lib/schemas'
 import { photoKeys } from '@/lib/queryKeys'
 import { api } from '@/lib/api'
-import { STALE_TIME } from '@/lib/constants'
 import { useEffect } from 'react'
 
 export function useImageSearch({ params }: { params: SearchParams }) {
@@ -26,7 +25,6 @@ export function useImageSearch({ params }: { params: SearchParams }) {
       }
       return lastPageParam + 1
     },
-    staleTime: STALE_TIME.SEARCH_RESULTS,
     enabled: !!params.query,
   })
 
