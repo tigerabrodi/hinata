@@ -18,7 +18,7 @@ import { userKeys } from '@/lib/queryKeys'
 import {
   USER_DETAIL_PHOTOS_PAGE_INDEX,
   USER_DETAIL_PHOTOS_PER_PAGE,
-} from '../user-detail-page'
+} from '../user-detail'
 import { ProfileImage } from '@/components/core/ProfileImage'
 
 const getOptimizedFullscreenUrl = (rawUrl: string) => {

@@ -50,7 +50,7 @@ export function SearchResults({
     return () => {
       observer.disconnect()
     }
-  }, [hasNextPage, isFetchingNextPage, handleLoadMore])
+  }, [handleLoadMore, hasNextPage, isFetchingNextPage])
 
   if (isLoading) {
     return <ImageGridSkeleton count={DEFAULT_QUERY_PARAM_VALUES.perPage} />

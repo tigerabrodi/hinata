@@ -7,7 +7,7 @@ import { handleDownload } from '@/lib/utils'
 import {
   USER_DETAIL_PHOTOS_PAGE_INDEX,
   USER_DETAIL_PHOTOS_PER_PAGE,
-} from '@/pages/user-detail-page'
+} from '@/pages/user-detail'
 import { useQueryClient } from '@tanstack/react-query'
 import { DownloadIcon } from 'lucide-react'
 import { Blurhash } from 'react-blurhash'
