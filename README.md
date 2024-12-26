@@ -6,6 +6,10 @@ Had a lot of fun geeking out on performance.
 
 https://github.com/user-attachments/assets/d489615c-454b-4352-af7a-f43c5ea487ee
 
+# PS...
+
+If it isn't working, the rate limiting has been hit.
+
 # Get it up and running
 
 First, clone the repo and install the dependencies:
