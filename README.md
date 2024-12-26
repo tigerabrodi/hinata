@@ -99,6 +99,31 @@ You might wonder, what's decoding?
 
 When the browser loads an image, it gets the image as a compressed file. Decoding is the process of decompressing the image and turning it into a bitmap. A bitmap is a map of pixels where each pixel has a color and a position. This is necessary so the browser can display the image.
 
+# Preloading images
+
+Have you ever wondered why despite having fetched the data, the image still takes a while to load?
+
+When the browser sees the image tag, it needs to:
+
+1. Fetch the image
+2. Download the image
+3. Decode the image
+
+We can do this work ahead of time by using `new Image()` and setting the `src` to the image URL.
+
+```js
+const image = new Image()
+image.src = {image url}
+```
+
+`new Image()` is a way to create a new image object. It doesn't do anything else.
+
+When you do `image.src = {image url}`, the browser will fetch, download and decode the image.
+
+When the browser then sees the image tag, it can get it directly from the cache instead!
+
+You can listen to `image.onload` to know when the image is ready to be used. In react, this would be `onLoad`.
+
 </details>
 
 <details>
@@ -461,6 +486,13 @@ These are the full elements:
 ```
 
 </details>
+
+# Improvements that could be made
+
+- Of course, we could add testing.
+- Let you edit the photo before downloading it.
+- Prefetching data on mobile using intersection observer.
+- Better error handling
 
 # Tech
 
