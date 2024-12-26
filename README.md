@@ -496,6 +496,7 @@ These are the full elements:
 - Of course, we could add testing.
 - Let you edit the photo before downloading it.
 - Prefetching data on mobile using intersection observer.
+- Delay before prefetching in case user hovers multiple images very fast, if the cursor is on an image more than 100ms, let's then prefetch, this would be more optimized tbf.
 - Better error handling
 
 # Tech
